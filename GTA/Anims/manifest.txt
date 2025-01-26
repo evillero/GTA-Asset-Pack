@@ -1,14 +1,14 @@
 Filetype: Flipper Animation Manifest
 Version: 1
 
-Name: gta_c
+Name: banner
 Min butthurt: 0
 Max butthurt: 18
 Min level: 1
 Max level: 30
 Weight: 3
 
-Name: gta_slide
+Name: gta-logo
 Min butthurt: 0
 Max butthurt: 18
 Min level: 1
@@ -22,14 +22,14 @@ Min level: 1
 Max level: 30
 Weight: 3
 
-Name: banner
+Name: gta_c
 Min butthurt: 0
 Max butthurt: 18
 Min level: 1
 Max level: 30
 Weight: 3
 
-Name: gta-logo
+Name: gta_slide
 Min butthurt: 0
 Max butthurt: 18
 Min level: 1
