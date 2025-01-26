@@ -29,4 +29,11 @@ Min level: 1
 Max level: 30
 Weight: 3
 
+Name: gta-logo
+Min butthurt: 0
+Max butthurt: 18
+Min level: 1
+Max level: 30
+Weight: 3
+
 
