@@ -11,3 +11,4 @@ GTA Asset Pack for Flipper Zero
 ![ble](https://github.com/user-attachments/assets/cb2419e0-8c8e-4673-9cbd-86c7d247df6b)
 ![gta](https://github.com/user-attachments/assets/adfc52d9-f23c-4fb0-a3ca-fbf5dc1e44e3)
 ![trevor](https://github.com/user-attachments/assets/d1686459-faef-4378-b67b-3478201ed23a)
+![michael](https://github.com/user-attachments/assets/a49be55e-9b42-4444-a4d7-fd935bdb0188)
