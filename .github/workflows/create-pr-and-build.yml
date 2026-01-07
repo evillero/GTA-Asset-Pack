@@ -4,21 +4,21 @@ on:
   workflow_dispatch:
     inputs:
       target_repo: flipperdevices/flipperzero-firmware
-        description: Target firmware repo (owner/repo) for PR
-        required: true
-        default: 'flipperdevices/flipperzero-firmware'
+        description:Target firmware repo (owner/repo) for PR
+        required:true
+        default: flipperdevices/flipperzero-firmware
       base_branch: dev
         description: 'Base branch to target (e.g., dev)'
         required: true
-        default: 'dev'
+        default: dev
       pr_branch: add-gta-assets
         description: 'Branch name to create in the firmware repo'
         required: true
-        default: 'add-gta-assets'
+        default: add-gta-assets
       target_hw: f7
-        description: 'Target hardware (f7 or f18)'
+        description: Target hardware (f7 or f18)
         required: true
-        default: 'f7'
+        default: f7
 
 jobs:
   create-pr-and-build:
