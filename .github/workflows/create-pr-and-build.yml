@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       target_repo: flipperdevices/flipperzero-firmware
-        description: 'Target firmware repo (owner/repo) for PR'
+        description: Target firmware repo (owner/repo) for PR
         required: true
         default: 'flipperdevices/flipperzero-firmware'
       base_branch: dev
