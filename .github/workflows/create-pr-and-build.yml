@@ -1,0 +1,83 @@
+name: "Create PR & Build Flipper firmware with GTA assets"
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_repo:
+        description: 'Target firmware repo (owner/repo) for PR'
+        required: true
+        default: 'flipperdevices/flipperzero-firmware'
+      base_branch:
+        description: 'Base branch to target (e.g., dev)'
+        required: true
+        default: 'dev'
+      pr_branch:
+        description: 'Branch name to create in the firmware repo'
+        required: true
+        default: 'add-gta-assets'
+      target_hw:
+        description: 'Target hardware (f7 or f18)'
+        required: true
+        default: 'f7'
+
+jobs:
+  create-pr-and-build:
+    runs-on: ubuntu-latest
+    env:
+      PR_TITLE: "Add GTA assets (GTA-Asset-Pack)"
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+
+      - name: Install required tools
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y git curl jq python3 python3-pip
+          # Install GitHub CLI for creating PRs
+          type -p gh || {
+            curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+            sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+            sudo apt update
+            sudo apt install gh -y
+          }
+
+      - name: Clone target firmware repo
+        run: |
+          git clone https://github.com/${{ github.event.inputs.target_repo }} firmware
+          cd firmware
+          git fetch --all --prune
+          git checkout ${{ github.event.inputs.base_branch }} || git checkout -b ${{ github.event.inputs.base_branch }}
+
+      - name: Apply GTA assets patch (create branch & commit)
+        run: |
+          chmod +x ./scripts/apply_and_commit_patch.sh
+          ./scripts/apply_and_commit_patch.sh firmware "${{ github.event.inputs.pr_branch }}"
+
+      - name: Push branch & create PR (requires repo-scoped PAT in secret TARGET_PAT)
+        if: secrets.TARGET_PAT != ''
+        env:
+          TARGET_PAT: ${{ secrets.TARGET_PAT }}
+        run: |
+          cd firmware
+          git remote set-url origin https://x-access-token:${TARGET_PAT}@github.com/${{ github.event.inputs.target_repo }}.git
+          git push -u origin ${{ github.event.inputs.pr_branch }}
+          printf "%s" "${TARGET_PAT}" | gh auth login --with-token
+          gh pr create --title "${{ env.PR_TITLE }}" --body "Adds the GTA Asset Pack (animations, fonts, icons)." --base "${{ github.event.inputs.base_branch }}" --head "${{ github.event.inputs.pr_branch }}" --repo "${{ github.event.inputs.target_repo }}"
+
+      - name: Build firmware (attempt)
+        run: |
+          cd firmware
+          ./fbt TARGET_HW=${{ github.event.inputs.target_hw }} fap_dist || echo "Build failed or requires additional toolchain/configuration. Check build logs."
+
+      - name: Upload build artifacts (if any)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: flipper-build-artifacts
+          path: firmware/dist || .
+
+      - name: Notes
+        run: |
+          echo "If push/PR step was skipped, add a repo-scoped PAT named TARGET_PAT in repository Settings -> Secrets to enable automatic push & PR creation."
+          echo "The workflow clones the target firmware, copies GTA assets into assets/gta, commits on branch '${{ github.event.inputs.pr_branch }}' and optionally creates a PR."

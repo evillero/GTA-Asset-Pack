@@ -14,3 +14,29 @@ GTA Asset Pack for Flipper Zero
 ![michael](https://github.com/user-attachments/assets/a49be55e-9b42-4444-a4d7-fd935bdb0188)
 ![frenklin](https://github.com/user-attachments/assets/8a0d7f67-b061-4500-b3df-ba4258ea95a5)
 ![five](https://github.com/user-attachments/assets/86a06b1b-91d7-451f-80c0-153265dec473)
+
+---
+
+## CI Build & PR (Add assets to Flipper firmware) 🔧
+
+This repository includes a GitHub Actions workflow that can:
+
+- Create a branch in a target Flipper firmware repo, copy the `GTA/` assets into `assets/gta`, and commit the changes.
+- Open a Pull Request automatically if you provide a personal access token (set secret `TARGET_PAT` in repository Settings → Secrets with `repo` scope).
+- Run the firmware build (using the firmware `./fbt` tool) and upload build artifacts.
+
+How to use:
+
+1. Go to Actions → "Create PR & Build Flipper firmware with GTA assets" and click "Run workflow".
+2. Inputs:
+   - `target_repo`: owner/repo of the target firmware repo (default: `flipperdevices/flipperzero-firmware`)
+   - `base_branch`: branch to target in the firmware repo (default: `dev`)
+   - `pr_branch`: branch name to create (default: `add-gta-assets`)
+   - `target_hw`: hardware target (default: `f7`)
+3. If you want the workflow to push and create a PR in the target repo, add a repo-scoped PAT as a repository secret named `TARGET_PAT`.
+
+Notes:
+
+- Building in Actions may require additional toolchain configuration or secrets depending on the firmware repo; check the workflow logs if a build fails.
+- If you want me to open the PR directly against the official firmware automatically, provide a PAT with repo permissions and I will adjust the workflow/branch name as needed.
+
